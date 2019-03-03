@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".settings3">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="432dp"
+            android:layout_height="97dp"
+            android:contentDescription="TODO"
+            app:srcCompat="@drawable/settings"/>
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/set_back"
+            android:layout_centerVertical="true"
+            />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/addcat3"
+        android:layout_width="252dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:background="@drawable/set_adcat"
+        />
+
+    <Button
+        android:id="@+id/showcat3"
+        android:layout_gravity="center"
+
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/set_showcat"
+        />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:background="@drawable/showcat_field">
+    <TextView
+        android:id="@+id/set3_showcat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20sp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#000"
+        android:textSize="22sp"
+        />
+    </android.support.v4.widget.NestedScrollView>
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/set3_showbtn"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Show"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/addlt3"
+        android:layout_gravity="center"
+
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/set_adlt"
+        />
+
+    <!--<android.support.v4.widget.NestedScrollView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginStart="8dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:layout_marginEnd="8dp"-->
+    <!--android:background="@drawable/showcat_field"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintHorizontal_bias="0.539"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:layout_constraintVertical_bias="0.681">-->
+
+
+
+    <!--</android.support.v4.widget.NestedScrollView>-->
+
+
+</LinearLayout>
