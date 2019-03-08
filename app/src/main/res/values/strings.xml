@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My App</string>
+    <string name="app_name">ExpenseTracker</string>
     <string name="profile">profile</string>
     <string name="user_name">User Name</string>
     <string name="phone_no">Phone no.</string>
@@ -7,4 +7,11 @@
     <string name="username">Username</string>
     <string name="dob">DOB</string>
     <string name="password">Password</string>
+    <string-array name="categories">
+        <item>All Categories</item>
+        <item>food</item>
+        <item>shopping</item>
+        <item>bills</item>
+        <item>rent</item>
+    </string-array>
 </resources>
