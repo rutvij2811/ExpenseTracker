@@ -45,7 +45,8 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/username1"
         android:ems="10"
-        android:hint="  Username"
+        android:hint="@string/username"
+        android:importantForAutofill="no"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,9 +54,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.27"
-        android:importantForAutofill="no" tools:targetApi="o" />
+        tools:targetApi="o" />
 
-    <EditText
+    <TextView
         android:id="@+id/dob"
         android:layout_width="308dp"
         android:layout_height="41dp"
@@ -64,19 +65,22 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/dob"
+        android:paddingTop="6dp"
+        android:textColor="#000"
         android:ems="10"
-        android:hint="  DOB"
-        android:inputType="date"
+        android:hint="@string/dob"
+        android:textSize="20sp"
+        android:importantForAutofill="no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.563"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.387"
-        android:importantForAutofill="no" tools:targetApi="o" />
+        tools:targetApi="o" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -85,7 +89,8 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/password1"
         android:ems="10"
-        android:hint="  Password"
+        android:hint="@string/password"
+        android:importantForAutofill="no"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,12 +98,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.499"
-        android:importantForAutofill="no" tools:targetApi="o"/>
+        tools:targetApi="o" />
 
     <Button
-        android:id="@+id/create"
+        android:id="@+id/createAcc"
         android:layout_width="259dp"
         android:layout_height="wrap_content"
+
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -109,5 +115,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.658" />
+
+
 
 </android.support.constraint.ConstraintLayout>
