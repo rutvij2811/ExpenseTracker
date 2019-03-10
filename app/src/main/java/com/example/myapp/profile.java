@@ -138,20 +138,25 @@ public class profile extends AppCompatActivity {
         userUpdate.put(KEY_DOB,et_dob.getText().toString());
         userUpdate.put(KEY_PHONE,et_phone.getText().toString());
         userUpdate.put(KEY_ADDR,et_addr.getText().toString());
+        if(et_phone.getText().toString().length() != 10){
+            Toast.makeText(this, "The phone number should have 10 digits.", Toast.LENGTH_SHORT).show();
+        }
+        else{
 
-        userRef.set(userUpdate, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(profile.this, "Updated", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.toString());
-                    }
-                });
+            userRef.set(userUpdate, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(profile.this, "Updated", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+        }
 
     }
 
