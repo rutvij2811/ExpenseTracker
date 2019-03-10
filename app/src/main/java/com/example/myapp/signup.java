@@ -16,12 +16,21 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 
 public class signup extends AppCompatActivity {
@@ -30,8 +39,9 @@ public class signup extends AppCompatActivity {
     TextView edit_dob;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef;
+    private CollectionReference userNameRef;
 
-
+    private ArrayList<String> userList = new ArrayList<>();
 
     DatePickerDialog.OnDateSetListener mDateSetListner;
     private static final String TAG = "signup";
@@ -95,6 +105,9 @@ public class signup extends AppCompatActivity {
                 if (user.getDob().isEmpty() || user.getUsername().isEmpty() || user.getPassword().isEmpty()){
                     Toast.makeText(signup.this, "Make sure none of the field is empty", Toast.LENGTH_SHORT).show();
                 }
+                else if (userList.contains(user.getUsername())){
+                    Toast.makeText(signup.this, "UserName already there in the database, please try a different username", Toast.LENGTH_SHORT).show();
+                }
                 else if (user.getUsername().length() < 3){
                     Toast.makeText(signup.this, "Minimum username length should be 3 characters", Toast.LENGTH_SHORT).show();
                 }
@@ -107,6 +120,10 @@ public class signup extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(signup.this, "Success", Toast.LENGTH_SHORT).show();
+                                    getUserList();
+                                    edit_username.setText(null);
+                                    edit_dob.setText(null);
+                                    edit_pass.setText(null);
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -118,8 +135,30 @@ public class signup extends AppCompatActivity {
                             });
                 }
 
+
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getUserList();
+    }
+
+    private void getUserList() {
+        userList.clear();
+        userNameRef = db.collection("ExpenseTracker");
+        userNameRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                            String username = documentSnapshot.getString("username");
+                            userList.add(username);
+                        }
+                    }
+                });
     }
 
     private void gotomain() {
