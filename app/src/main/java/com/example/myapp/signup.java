@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
 
 
 public class signup extends AppCompatActivity {
+    private Button back;
     EditText edit_username, edit_pass;
     Button btn_createAcc;
     TextView edit_dob;
@@ -56,7 +57,13 @@ public class signup extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         edit_username = findViewById(R.id.username);
         edit_dob = findViewById(R.id.dob);
-
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotomain();
+            }
+        });
 
         edit_dob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +171,7 @@ public class signup extends AppCompatActivity {
     private void gotomain() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
 }
