@@ -12,13 +12,21 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class settings4 extends AppCompatActivity {
     private Button back,addlt4,showcat4,addcat4;
@@ -28,6 +36,8 @@ public class settings4 extends AppCompatActivity {
     private static final String KEY_CAT = "category";
     private static final String KEY_AMT = "amount";
     String userToUse;
+    private CollectionReference getCatRef;
+    private ArrayList<String> categoryList = new ArrayList<>();
 
 
     EditText et_cat,et_amt;
@@ -65,33 +75,54 @@ public class settings4 extends AppCompatActivity {
             }
         });
 
-        back = (Button) findViewById(R.id.back);
+        back =  findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openhome();
             }
         });
-        addlt4 = (Button) findViewById(R.id.addlt4);
+        addlt4 = findViewById(R.id.addlt4);
         addlt4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { addlimit();
             }
         });
-        addcat4 = (Button) findViewById(R.id.addcat4);
+        addcat4 = findViewById(R.id.addcat4);
         addcat4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addcategory();
             }
         });
-        showcat4 = (Button) findViewById(R.id.showcat4);
+        showcat4 = findViewById(R.id.showcat4);
         showcat4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showcategory();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getCategoryList();
+    }
+
+    private void getCategoryList() {
+        categoryList.clear();
+        getCatRef = db.collection(userToUse +" Categories");
+        getCatRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                            String catName = documentSnapshot.getId();
+                            categoryList.add(catName);
+                        }
+                    }
+                });
     }
 
     private void updateCategory() {
@@ -101,21 +132,30 @@ public class settings4 extends AppCompatActivity {
         updateCat.put(KEY_CAT,et_cat.getText().toString());
         updateCat.put(KEY_AMT,Integer.parseInt(et_amt.getText().toString()));
 
-        updateCatRef.set(updateCat, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(settings4.this, "Amount added to "+ et_cat.getText().toString(), Toast.LENGTH_SHORT).show();
-                        et_cat.setText(null);
-                        et_amt.setText(null);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.toString());
-                    }
-                });
+        if( et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty()){
+            Toast.makeText(this, "Make sure no field is empty", Toast.LENGTH_SHORT).show();
+        }
+        else if(!categoryList.contains(et_cat.getText())){
+            Toast.makeText(this, "Category not yet defined", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            updateCatRef.set(updateCat, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(settings4.this, "Amount added to "+ et_cat.getText().toString(), Toast.LENGTH_SHORT).show();
+                            getCategoryList();
+                            et_cat.setText(null);
+                            et_amt.setText(null);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+        }
     }
 
     public void openhome() {
