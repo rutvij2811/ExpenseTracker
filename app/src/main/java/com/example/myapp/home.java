@@ -52,70 +52,49 @@ public class home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        getLoginDetails();
         et_cat = findViewById(R.id.home_cat);
         //To make sp_cat spinner by getting the list of categories. First work on adding categories.
         et_amt = findViewById(R.id.home_amt);
         et_date = findViewById(R.id.home_date);
         addRec = findViewById(R.id.home_add);
 
-
         addRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recordRef = db.collection(userToUse +" Record").document();
-                Map<String, Object> insertRecord = new HashMap<>();
-                insertRecord.put(KEY_CATEGORY, et_cat.getText().toString());
-                insertRecord.put(KEY_AMT,Integer.parseInt(et_amt.getText().toString()));
-                insertRecord.put(KEY_DATE, getDateFromString(et_date.getText().toString()));
+                addRecord();
 
-                recordRef.set(insertRecord)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(home.this, "Record added", Toast.LENGTH_SHORT).show();
-                                et_amt.setText(null);
-                                et_date.setText(null);
-                                et_cat.setText(null);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, e.toString());
-                            }
-                        });
             }
         });
-        logout = (Button) findViewById(R.id.logout);
+        logout =  findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openmain();
             }
         });
-        settings = (Button) findViewById(R.id.settings);
+        settings = findViewById(R.id.settings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 opensettings();
             }
         });
-        profile = (Button) findViewById(R.id.profile);
+        profile = findViewById(R.id.profile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profilemanage();
             }
         });
-        manlog = (Button) findViewById(R.id.loginman);
+        manlog = findViewById(R.id.loginman);
         manlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginmanage();
             }
         });
-        analysis = (Button) findViewById(R.id.analysis);
+        analysis = findViewById(R.id.analysis);
         analysis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,9 +103,40 @@ public class home extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void addRecord() {
+//        getCategoryList();
+        String catName = et_cat.getText().toString();
+        if(et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty() || et_date.getText().toString().isEmpty()){
+            Toast.makeText(this, "Make sure none of the fields are empty", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            recordRef = db.collection(userToUse +" Record").document();
+            Map<String, Object> insertRecord = new HashMap<>();
+            insertRecord.put(KEY_CATEGORY, et_cat.getText().toString());
+            insertRecord.put(KEY_AMT,Integer.parseInt(et_amt.getText().toString()));
+            insertRecord.put(KEY_DATE, getDateFromString(et_date.getText().toString()));
+            recordRef.set(insertRecord)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(home.this, "Record added", Toast.LENGTH_SHORT).show();
+//                            getCategoryList();
+                            et_amt.setText(null);
+                            et_date.setText(null);
+                            et_cat.setText(null);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+        }
+    }
+
+
+    private void getLoginDetails() {
         loginRef = db.collection("login").document("username");
         loginRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -144,6 +154,7 @@ public class home extends AppCompatActivity {
                     }
                 });
     }
+
 
     public void openmain() {
         Intent intent = new Intent(this, MainActivity.class);
