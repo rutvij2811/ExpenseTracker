@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +10,10 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +30,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,15 +42,18 @@ import static android.content.ContentValues.TAG;
 
 public class home extends AppCompatActivity {
     private Button logout,settings,profile,manlog,analysis,addRec;
-    private EditText et_cat,et_amt,et_date;
+    private EditText et_cat,et_amt;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference recordRef;
     private DocumentReference loginRef;
     String userToUse;
+    private TextView et_date;
     private static final String KEY_CATEGORY = "category";
     private static final String KEY_AMT= "amt";
     private static final String KEY_DATE = "date";
     private static final String TAG = "home";
+
+    DatePickerDialog.OnDateSetListener mDateSetListner1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,40 @@ public class home extends AppCompatActivity {
         //To make sp_cat spinner by getting the list of categories. First work on adding categories.
         et_amt = findViewById(R.id.home_amt);
         et_date = findViewById(R.id.home_date);
+        et_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog dialog = new DatePickerDialog(
+                        home.this,
+                        android.R.style.Theme_DeviceDefault_Light_Dialog,
+                        mDateSetListner1,
+                        year, month, day);
+                dialog.show();
+            }
+        });
+        mDateSetListner1 = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month + 1;
+                String dob = dayOfMonth + "/" + month + "/" + year;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d/M/yyyy");
+                Date tmpDate = null;
+                try {
+                    tmpDate = simpleDateFormat.parse(dob);
+                    SimpleDateFormat simpleDateFormatNew = new SimpleDateFormat("dd/MM/yyyy");
+                    String finalDate = simpleDateFormatNew.format(tmpDate);
+                    et_date.setText(finalDate);
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
+                //et_date.setText(dob);
+
+            }
+        };
         addRec = findViewById(R.id.home_add);
 
         addRec.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +156,8 @@ public class home extends AppCompatActivity {
             insertRecord.put(KEY_CATEGORY, et_cat.getText().toString());
             insertRecord.put(KEY_AMT,Integer.parseInt(et_amt.getText().toString()));
             insertRecord.put(KEY_DATE, getDateFromString(et_date.getText().toString()));
-            recordRef.set(insertRecord)
+            recordRef
+                    .set(insertRecord)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -182,7 +224,7 @@ public class home extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    static final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+    static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     public Date getDateFromString(String datetoSaved){
 
         try {

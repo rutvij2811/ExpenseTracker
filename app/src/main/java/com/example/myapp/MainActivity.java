@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                                 Map<String, Object> logUser = new HashMap<>();
                                 logUser.put("Username",etuser);
                                 loginRef.set(logUser);
+                                SharedPreferences sp = getSharedPreferences("user",Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("username",etuser);
+                                editor.apply();
                                 gotoHome();
                             }
                         }else{
