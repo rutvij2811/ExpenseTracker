@@ -41,19 +41,21 @@ import javax.annotation.Nullable;
 import static android.content.ContentValues.TAG;
 
 public class home extends AppCompatActivity {
-    private Button logout,settings,profile,manlog,analysis,addRec;
-    private EditText et_cat,et_amt;
+    static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+    private static final String KEY_CATEGORY = "category";
+    private static final String KEY_AMT = "amt";
+    private static final String KEY_DATE = "date";
+    private static final String TAG = "home";
+    String userToUse;
+    DatePickerDialog.OnDateSetListener mDateSetListner1;
+    private Button logout, settings, profile, manlog, analysis, addRec;
+    private EditText et_cat, et_amt;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference recordRef;
     private DocumentReference loginRef;
-    String userToUse;
     private TextView et_date;
-    private static final String KEY_CATEGORY = "category";
-    private static final String KEY_AMT= "amt";
-    private static final String KEY_DATE = "date";
-    private static final String TAG = "home";
-
-    DatePickerDialog.OnDateSetListener mDateSetListner1;
+    private ArrayList<String> categoryList = new ArrayList<>();
+    private CollectionReference catListRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,7 @@ public class home extends AppCompatActivity {
                     SimpleDateFormat simpleDateFormatNew = new SimpleDateFormat("dd/MM/yyyy");
                     String finalDate = simpleDateFormatNew.format(tmpDate);
                     et_date.setText(finalDate);
-                }catch (ParseException e){
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 //et_date.setText(dob);
@@ -99,15 +101,16 @@ public class home extends AppCompatActivity {
             }
         };
         addRec = findViewById(R.id.home_add);
-
+        categoryList.clear();
         addRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                catNameList();
                 addRecord();
 
             }
         });
-        logout =  findViewById(R.id.logout);
+        logout = findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,38 +148,52 @@ public class home extends AppCompatActivity {
     }
 
     private void addRecord() {
-//        getCategoryList();
         String catName = et_cat.getText().toString();
-        if(et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty() || et_date.getText().toString().isEmpty()){
+        if (et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty() || et_date.getText().toString().isEmpty()) {
             Toast.makeText(this, "Make sure none of the fields are empty", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            recordRef = db.collection(userToUse +" Record").document();
+        } else {
+            recordRef = db.collection(userToUse + " Record").document();
             Map<String, Object> insertRecord = new HashMap<>();
             insertRecord.put(KEY_CATEGORY, et_cat.getText().toString());
-            insertRecord.put(KEY_AMT,Integer.parseInt(et_amt.getText().toString()));
+            insertRecord.put(KEY_AMT, Integer.parseInt(et_amt.getText().toString()));
             insertRecord.put(KEY_DATE, getDateFromString(et_date.getText().toString()));
-            recordRef
-                    .set(insertRecord)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(home.this, "Record added", Toast.LENGTH_SHORT).show();
-//                            getCategoryList();
-                            et_amt.setText(null);
-                            et_date.setText(null);
-                            et_cat.setText(null);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, e.toString());
-                        }
-                    });
+            if (!categoryList.contains(et_cat.getText().toString())) {
+                Toast.makeText(this, "Category not in the database, please add it first.", Toast.LENGTH_SHORT).show();
+            } else {
+                recordRef
+                        .set(insertRecord)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(home.this, "Record added", Toast.LENGTH_SHORT).show();
+                                et_amt.setText(null);
+                                et_date.setText(null);
+                                et_cat.setText(null);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+            }
         }
     }
 
+    private void catNameList() {
+//        categoryList.clear();
+        catListRef = db.collection(userToUse + " Categories");
+        catListRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                            categoryList.add(documentSnapshot.getId());
+                        }
+                    }
+                });
+    }
 
     private void getLoginDetails() {
         loginRef = db.collection("login").document("username");
@@ -197,43 +214,44 @@ public class home extends AppCompatActivity {
                 });
     }
 
-
     public void openmain() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
-    public void opensettings(){
+
+    public void opensettings() {
         Intent intent = new Intent(this, settings.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-    public void profilemanage(){
+
+    public void profilemanage() {
         Intent intent = new Intent(this, profile.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-    public void loginmanage(){
+
+    public void loginmanage() {
         Intent intent = new Intent(this, manlog.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-    public void openanalysis(){
+
+    public void openanalysis() {
         Intent intent = new Intent(this, analysis.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-    public Date getDateFromString(String datetoSaved){
+    public Date getDateFromString(String datetoSaved) {
 
         try {
             Date date = format.parse(datetoSaved);
-            return date ;
-        } catch (ParseException e){
-            return null ;
+            return date;
+        } catch (ParseException e) {
+            return null;
         }
 
     }
-
 }
