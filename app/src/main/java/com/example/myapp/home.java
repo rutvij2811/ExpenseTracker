@@ -46,7 +46,7 @@ public class home extends AppCompatActivity {
     private static final String KEY_AMT = "amt";
     private static final String KEY_DATE = "date";
     private static final String TAG = "home";
-    String userToUse;
+    private String userToUse;
     DatePickerDialog.OnDateSetListener mDateSetListner1;
     private Button logout, settings, profile, manlog, analysis, addRec;
     private EditText et_cat, et_amt;
@@ -60,8 +60,8 @@ public class home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
         getLoginDetails();
+        setContentView(R.layout.activity_home);
         et_cat = findViewById(R.id.home_cat);
         //To make sp_cat spinner by getting the list of categories. First work on adding categories.
         et_amt = findViewById(R.id.home_amt);
@@ -101,11 +101,9 @@ public class home extends AppCompatActivity {
             }
         };
         addRec = findViewById(R.id.home_add);
-        categoryList.clear();
         addRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                catNameList();
                 addRecord();
 
             }
@@ -157,7 +155,7 @@ public class home extends AppCompatActivity {
             insertRecord.put(KEY_CATEGORY, et_cat.getText().toString());
             insertRecord.put(KEY_AMT, Integer.parseInt(et_amt.getText().toString()));
             insertRecord.put(KEY_DATE, getDateFromString(et_date.getText().toString()));
-            if (!categoryList.contains(et_cat.getText().toString())) {
+            if (!categoryList.contains(catName)) {
                 Toast.makeText(this, "Category not in the database, please add it first.", Toast.LENGTH_SHORT).show();
             } else {
                 recordRef
@@ -182,7 +180,7 @@ public class home extends AppCompatActivity {
     }
 
     private void catNameList() {
-//        categoryList.clear();
+        categoryList.clear();
         catListRef = db.collection(userToUse + " Categories");
         catListRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -195,6 +193,7 @@ public class home extends AppCompatActivity {
                 });
     }
 
+
     private void getLoginDetails() {
         loginRef = db.collection("login").document("username");
         loginRef.get()
@@ -203,6 +202,8 @@ public class home extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             userToUse = documentSnapshot.getString("Username");
+                            Toast.makeText(home.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
+                            catNameList();
                         }
                     }
                 })
