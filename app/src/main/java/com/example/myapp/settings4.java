@@ -29,53 +29,53 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 public class settings4 extends AppCompatActivity {
-    private Button back,addlt4,showcat4,addcat4;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference loginRef,updateCatRef;
     private static final String TAG = "settings4";
     private static final String KEY_CAT = "category";
     private static final String KEY_AMT = "amount";
     String userToUse;
+    EditText et_cat, et_amt;
+    Button btn_update;
+    private Button back, addlt4, showcat4, addcat4;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference loginRef, updateCatRef;
     private CollectionReference getCatRef;
     private ArrayList<String> categoryList = new ArrayList<>();
 
-
-    EditText et_cat,et_amt;
-    Button btn_update;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        getLoginDetails();
         setContentView(R.layout.activity_settings4);
 
         et_cat = findViewById(R.id.set4_cat);
         et_amt = findViewById(R.id.set4_amt);
         btn_update = findViewById(R.id.set4_update);
 
-        loginRef = db.collection("login").document("username");
-        loginRef.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            userToUse = documentSnapshot.getString("Username");
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(settings4.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+//        loginRef = db.collection("login").document("username");
+//        loginRef.get()
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        if (documentSnapshot.exists()) {
+//                            userToUse = documentSnapshot.getString("Username");
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(settings4.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateCategory();
+                getLoginDetails();
             }
         });
 
-        back =  findViewById(R.id.back);
+        back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +85,8 @@ public class settings4 extends AppCompatActivity {
         addlt4 = findViewById(R.id.addlt4);
         addlt4.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { addlimit();
+            public void onClick(View v) {
+                addlimit();
             }
         });
         addcat4 = findViewById(R.id.addcat4);
@@ -104,47 +105,66 @@ public class settings4 extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getCategoryList();
-    }
 
-    private void getCategoryList() {
-        categoryList.clear();
-        getCatRef = db.collection(userToUse +" Categories");
-        getCatRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+    private void getLoginDetails() {
+        loginRef = db.collection("login").document("username");
+        loginRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
-                            String catName = documentSnapshot.getId();
-                            categoryList.add(catName);
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            userToUse = documentSnapshot.getString("Username");
+//                            Toast.makeText(settings4.this, "User :" + userToUse, Toast.LENGTH_SHORT).show();
+                            getCategoryList();
+//                            updateCategory();
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(settings4.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private void getCategoryList() {
+        categoryList.clear();
+//        Toast.makeText(this, "catCheck" + userToUse, Toast.LENGTH_SHORT).show();
+        getCatRef = db.collection(userToUse + " Categories");
+        getCatRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String catName = documentSnapshot.getId();
+                            categoryList.add(catName);
+                        }
+                        updateCategory();
+                    }
+                });
+
+    }
+
     private void updateCategory() {
-        updateCatRef = db.collection(userToUse +" Categories").document(et_cat.getText().toString());
+        Toast.makeText(this, "Update  ", Toast.LENGTH_SHORT).show();
+        updateCatRef = db.collection(userToUse + " Categories").document(et_cat.getText().toString());
 
         Map<String, Object> updateCat = new HashMap<>();
-        updateCat.put(KEY_CAT,et_cat.getText().toString());
-        updateCat.put(KEY_AMT,Integer.parseInt(et_amt.getText().toString()));
+        updateCat.put(KEY_CAT, et_cat.getText().toString());
+        updateCat.put(KEY_AMT, Integer.parseInt(et_amt.getText().toString()));
 
-        if( et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty()){
+        if (et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty()) {
             Toast.makeText(this, "Make sure no field is empty", Toast.LENGTH_SHORT).show();
-        }
-        else if(!categoryList.contains(et_cat.getText())){
+        } else if (!categoryList.contains(et_cat.getText().toString())) {
             Toast.makeText(this, "Category not yet defined", Toast.LENGTH_SHORT).show();
-        }
-        else{
+        } else {
             updateCatRef.set(updateCat, SetOptions.merge())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(settings4.this, "Amount added to "+ et_cat.getText().toString(), Toast.LENGTH_SHORT).show();
-                            getCategoryList();
+                            Toast.makeText(settings4.this, "Amount added to " + et_cat.getText().toString(), Toast.LENGTH_SHORT).show();
+//                            getCategoryList();
                             et_cat.setText(null);
                             et_amt.setText(null);
                         }
@@ -162,16 +182,19 @@ public class settings4 extends AppCompatActivity {
         Intent intent = new Intent(this, home.class);
         startActivity(intent);
     }
+
     public void addlimit() {
         Intent intent = new Intent(this, settings.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
+
     public void addcategory() {
         Intent intent = new Intent(this, settings2.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
+
     public void showcategory() {
         Intent intent = new Intent(this, settings3.class);
         startActivity(intent);

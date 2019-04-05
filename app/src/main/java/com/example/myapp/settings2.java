@@ -45,23 +45,6 @@ public class settings2 extends AppCompatActivity {
         et_catName = findViewById(R.id.set2_cat);
         bt_addCat = findViewById(R.id.set2_add);
 
-        loginRef = db.collection("login").document("username");
-        loginRef.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            userToUse = documentSnapshot.getString("Username");
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(settings2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
         bt_addCat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +71,7 @@ public class settings2 extends AppCompatActivity {
         showcat2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showcategory();
+                getLoginDetails();
             }
         });
         addlt2 = (Button) findViewById(R.id.addlt2);
@@ -98,6 +81,27 @@ public class settings2 extends AppCompatActivity {
                 addlimit();
             }
         });
+    }
+
+    private void getLoginDetails() {
+        loginRef = db.collection("login").document("username");
+        loginRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            userToUse = documentSnapshot.getString("Username");
+                            Toast.makeText(settings2.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
+                            showcategory();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(settings2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void createCatRef() {
