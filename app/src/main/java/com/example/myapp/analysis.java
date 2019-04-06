@@ -7,11 +7,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +40,9 @@ import javax.annotation.Nullable;
 public class analysis extends AppCompatActivity {
     static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     String userToUse;
-    TextView showrecord, ana_cat;
+    TextView showrecord;
     TextView et_date1, et_date2;
+    EditText ana_cat;
     DatePickerDialog.OnDateSetListener mDateSetListner1, mDateSetListner2;
     private Button ana_back, analyze,piebtn;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -68,7 +71,7 @@ public class analysis extends AppCompatActivity {
         });
         et_date1 = (TextView) findViewById(R.id.et_date1);
         et_date2 = (TextView) findViewById(R.id.et_date2);
-        ana_cat = (TextView) findViewById(R.id.ana_cat);
+        ana_cat = findViewById(R.id.ana_cat);
         SharedPreferences sp = getSharedPreferences("user", Context.MODE_PRIVATE);
 
         userToUse = sp.getString("username", "");
@@ -196,41 +199,80 @@ public class analysis extends AppCompatActivity {
         Date date2 = getDateFromString(et_date2.getText().toString());
 //        long toDate = date2.getTime();
 
-
-        recordRef
-                .whereGreaterThanOrEqualTo("date", date1)
-                .whereLessThanOrEqualTo("date", date2)
-                .orderBy("date")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        sample = "";
-                        if (queryDocumentSnapshots.isEmpty()) {
-                            Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
-                        }
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            String cat = documentSnapshot.getString("category");
-                            String amt = documentSnapshot.get("amt").toString();
+        if(TextUtils.isEmpty(ana_cat.getText())){
+            recordRef
+                    .whereGreaterThanOrEqualTo("date", date1)
+                    .whereLessThanOrEqualTo("date", date2)
+                    .orderBy("date")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            sample = "";
+                            if (queryDocumentSnapshots.isEmpty()) {
+                                Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
+                            }
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                String cat = documentSnapshot.getString("category");
+                                String amt = documentSnapshot.get("amt").toString();
 //                            String date = documentSnapshot.getDate("date").toString();
 
-                            String pattern = "dd-MM-yyyy";
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                            String date = simpleDateFormat.format(documentSnapshot.getDate("date"));
+                                String pattern = "dd-MM-yyyy";
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                                String date = simpleDateFormat.format(documentSnapshot.getDate("date"));
 
-                            sample += amt + " for " + cat + " on " + date + "\n";
+                                sample += amt + " for " + cat + " on " + date + "\n";
+
+                            }
+                            showrecord.setText(sample);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("analysis", "Error: " + e.toString());
 
                         }
-                        showrecord.setText(sample);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("analysis", "Error: " + e.toString());
+                    });
+        }else{
+            String catName = ana_cat.getText().toString();
+            recordRef
+                    .whereEqualTo("category", catName)
+                    .whereGreaterThanOrEqualTo("date", date1)
+                    .whereLessThanOrEqualTo("date", date2)
+                    .orderBy("date")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            sample = "";
+                            if (queryDocumentSnapshots.isEmpty()) {
+                                Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
+                            }
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                String cat = documentSnapshot.getString("category");
+                                String amt = documentSnapshot.get("amt").toString();
+//                            String date = documentSnapshot.getDate("date").toString();
 
-                    }
-                });
+                                String pattern = "dd-MM-yyyy";
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                                String date = simpleDateFormat.format(documentSnapshot.getDate("date"));
+
+                                sample += amt + " for " + cat + " on " + date + "\n";
+
+                            }
+                            showrecord.setText(sample);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("analysis", "Error: " + e.toString());
+
+                        }
+                    });
+        }
+
     }
 
     public Date getDateFromString(String datetoSaved) {
