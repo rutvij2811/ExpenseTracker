@@ -41,7 +41,7 @@ public class analysis extends AppCompatActivity {
     TextView showrecord, ana_cat;
     TextView et_date1, et_date2;
     DatePickerDialog.OnDateSetListener mDateSetListner1, mDateSetListner2;
-    private Button ana_back, analyze;
+    private Button ana_back, analyze,piebtn;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference recordRef;
     private String sample = "";
@@ -59,6 +59,13 @@ public class analysis extends AppCompatActivity {
             }
         });
 
+        piebtn = findViewById(R.id.piechartbtn);
+        piebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoPieActivity();
+            }
+        });
         et_date1 = (TextView) findViewById(R.id.et_date1);
         et_date2 = (TextView) findViewById(R.id.et_date2);
         ana_cat = (TextView) findViewById(R.id.ana_cat);
@@ -157,6 +164,10 @@ public class analysis extends AppCompatActivity {
 
     }
 
+    private void gotoPieActivity() {
+        startActivity(new Intent(analysis.this,piechart.class));
+    }
+
     public void openhome() {
         Intent intent = new Intent(this, home.class);
         startActivity(intent);
@@ -196,7 +207,7 @@ public class analysis extends AppCompatActivity {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         sample = "";
                         if (queryDocumentSnapshots.isEmpty()) {
-                            Toast.makeText(analysis.this, "QuerySnapShotEmpty", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
                         }
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             String cat = documentSnapshot.getString("category");
