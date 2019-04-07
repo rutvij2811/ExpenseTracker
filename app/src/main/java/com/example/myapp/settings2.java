@@ -48,7 +48,7 @@ public class settings2 extends AppCompatActivity {
         bt_addCat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createCatRef();
+                getLoginDetails();
             }
         });
 
@@ -71,15 +71,14 @@ public class settings2 extends AppCompatActivity {
         showcat2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLoginDetails();
+                showcategory();
             }
         });
         addlt2 = (Button) findViewById(R.id.addlt2);
         addlt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addlimit();
-            }
+                addlimit();            }
         });
     }
 
@@ -92,7 +91,7 @@ public class settings2 extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             userToUse = documentSnapshot.getString("Username");
                             Toast.makeText(settings2.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
-                            showcategory();
+                            createCatRef();
                         }
                     }
                 })

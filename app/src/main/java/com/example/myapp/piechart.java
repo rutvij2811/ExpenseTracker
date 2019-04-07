@@ -1,6 +1,8 @@
 package com.example.myapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,8 +37,30 @@ public class piechart extends AppCompatActivity {
     private DocumentReference loginRef = db.collection("login").document("username");
     String userToUse;
     private CollectionReference recordRef;
-    List<PieEntry> pieEntries=new ArrayList();
+    String catName;
+    float catAmt;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loginRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            userToUse = documentSnapshot.getString("Username");
 
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(piechart.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,41 +73,51 @@ public class piechart extends AppCompatActivity {
             }
         });
 
-
-
-
-
+        SharedPreferences sp = getSharedPreferences("user", Context.MODE_PRIVATE);
+        userToUse = sp.getString("username", "");
+        recordRef = db.collection(userToUse + " Record");
+        setupPieChart();
     }
     private void setupPieChart() {
-        recordRef = db.collection(userToUse +" Record");
-        Toast.makeText(piechart.this,  userToUse, Toast.LENGTH_SHORT).show();
 
         recordRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<PieEntry> pieEntries=new ArrayList();
 
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
                             if(documentSnapshot.exists()) {
-                                String catName = documentSnapshot.getString("category");
-                                String catAmt = documentSnapshot.get("amt").toString();
+                                catName = documentSnapshot.getString("category");
+                                catAmt = Float.valueOf(documentSnapshot.get("amt").toString());
                                 //recnames= recnames+","+catName;
                                 //recamt=recamt+","+catAmt;
                                 //int amt = Integer.parseInt(catAmt);
-                                pieEntries.add(new PieEntry(Float.valueOf(catAmt),catName));
-                                Toast.makeText(piechart.this, catAmt+ "", Toast.LENGTH_SHORT).show();
+                                pieEntries.add(new PieEntry(catAmt,catName));
 
                             }else{
-                                Toast.makeText(piechart.this, "category not found", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(piechart.this, "error", Toast.LENGTH_SHORT).show();
                             }
 
                         }
-                        /*String[] name=recnames.split(",");
-                        String[] splitamt=recamt.split(",");
-                        for(int i=0;i<splitamt.length;i++){
-                            amt[i]=Integer.parseInt(splitamt[i]);
-                        }*/
+                        PieDataSet dataSet=new PieDataSet(pieEntries,"Expenditure");
+                        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+                        dataSet.setValueTextSize(15f);
+
+
+                        PieData data=new PieData(dataSet);
+
+                        PieChart chart=(PieChart) findViewById(R.id.chart);
+                        chart.setData(data);
+                        chart.setCenterText("Expenditure");
+                        chart.animateXY(1200,1200);
+                        chart.invalidate();
+
+
                     }
+
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -92,39 +126,11 @@ public class piechart extends AppCompatActivity {
                     }
                 });
 
-        PieDataSet dataSet=new PieDataSet(pieEntries,"Expenditure");
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        PieData data=new PieData(dataSet);
-
-        PieChart chart=(PieChart) findViewById(R.id.chart);
-        chart.setData(data);
-        chart.animateY(1000);
-        chart.invalidate();
 
 
 
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        loginRef.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            userToUse = documentSnapshot.getString("Username");
-                            setupPieChart();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(piechart.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-    }
     public void showana(){
         Intent intent = new Intent(this, analysis.class);
         startActivity(intent);
