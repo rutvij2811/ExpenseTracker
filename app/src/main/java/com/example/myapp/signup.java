@@ -38,6 +38,7 @@ public class signup extends AppCompatActivity {
     EditText edit_username, edit_pass;
     Button btn_createAcc;
     TextView edit_dob;
+    EditText secretAns;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef;
     private CollectionReference userNameRef;
@@ -49,6 +50,7 @@ public class signup extends AppCompatActivity {
     private static final String KEY_USERNAME ="username";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_DOB = "dob";
+    private static final String KEY_SECRET = "secret";
 
 
     @Override
@@ -57,6 +59,7 @@ public class signup extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         edit_username = findViewById(R.id.username);
         edit_dob = findViewById(R.id.dob);
+        secretAns = findViewById(R.id.secretAns);
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +89,12 @@ public class signup extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month = month + 1;
                 String dob = dayOfMonth + "-" + month + "-" + year;
-                edit_dob.setText(dob);
+                if(year > 2001){
+                    Toast.makeText(signup.this, "Min age req is 18", Toast.LENGTH_SHORT).show();
+                } else{
+
+                    edit_dob.setText(dob);
+                }
 
             }
         };
@@ -101,15 +109,16 @@ public class signup extends AppCompatActivity {
                 user.setUsername(edit_username.getText().toString());
                 user.setPassword(edit_pass.getText().toString());
                 user.setDob(edit_dob.getText().toString());
-
+                user.setSecret(secretAns.getText().toString());
 
                 Map<String, Object> usr = new HashMap<>();
                 usr.put(KEY_USERNAME,user.getUsername());
                 usr.put(KEY_DOB,user.getDob());
                 usr.put(KEY_PASSWORD,user.getPassword());
+                usr.put(KEY_SECRET,user.getSecret());
                 userRef = db.collection("ExpenseTracker").document("user "+user.getUsername());
 
-                if (user.getDob().isEmpty() || user.getUsername().isEmpty() || user.getPassword().isEmpty()){
+                if (user.getDob().isEmpty() || user.getUsername().isEmpty() || user.getPassword().isEmpty() || user.getSecret().isEmpty()){
                     Toast.makeText(signup.this, "Make sure none of the field is empty", Toast.LENGTH_SHORT).show();
                 }
                 else if (userList.contains(user.getUsername())){
@@ -131,6 +140,8 @@ public class signup extends AppCompatActivity {
                                     edit_username.setText(null);
                                     edit_dob.setText(null);
                                     edit_pass.setText(null);
+                                    secretAns.setText(null);
+                                    gotomain();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {

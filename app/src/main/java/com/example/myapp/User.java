@@ -4,6 +4,7 @@ public class User {
     private String username;
     private String password;
     private String dob;
+    private String secret;
     private String phone="";
     private String address="";
 
@@ -16,6 +17,14 @@ public class User {
         this.dob = dob;
         this.phone = phone;
         this.address = address;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     public String getUsername() {
