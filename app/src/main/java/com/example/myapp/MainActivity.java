@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +29,7 @@ import io.opencensus.tags.Tag;
 public class MainActivity extends AppCompatActivity {
 
     private Button login, signup;
+    private TextView forgotPass;
     private EditText username,password;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef,loginRef;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         username = (EditText)findViewById(R.id.main_username);
         password = (EditText)findViewById(R.id.main_pass);
-
+        forgotPass = findViewById(R.id.forgotPass);
         login = (Button) findViewById(R.id.log);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +58,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoForgotPass();
+            }
+        });
+
+    }
+
+    private void gotoForgotPass() {
+            startActivity(new Intent(MainActivity.this, ForgotPassword.class));
     }
 
     public void openhome() {
