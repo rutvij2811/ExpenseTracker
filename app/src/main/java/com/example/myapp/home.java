@@ -207,7 +207,7 @@ public class home extends AppCompatActivity {
                             SharedPreferences.Editor editor = userNamePref.edit();
                             editor.putString("userName",userToUse);
                             editor.apply();
-                            Toast.makeText(home.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(home.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
                             catNameList();
                         }
                     }
