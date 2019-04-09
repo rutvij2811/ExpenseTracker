@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -202,6 +203,10 @@ public class home extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             userToUse = documentSnapshot.getString("Username");
+                            SharedPreferences userNamePref = getSharedPreferences("username",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = userNamePref.edit();
+                            editor.putString("userName",userToUse);
+                            editor.apply();
                             Toast.makeText(home.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
                             catNameList();
                         }

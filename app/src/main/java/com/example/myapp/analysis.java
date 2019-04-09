@@ -44,7 +44,7 @@ public class analysis extends AppCompatActivity {
     TextView et_date1, et_date2;
     EditText ana_cat;
     DatePickerDialog.OnDateSetListener mDateSetListner1, mDateSetListner2;
-    private Button ana_back, analyze,piebtn;
+    private Button ana_back, analyze,piebtn,change;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference recordRef;
     private String sample = "";
@@ -160,15 +160,35 @@ public class analysis extends AppCompatActivity {
         analyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyrec();
+                if(et_date1.getText().toString().isEmpty() || et_date2.getText().toString().isEmpty()){
+                    Toast.makeText(analysis.this, "Please set a date range", Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    showMyrec();
+                }
+            }
+        });
+        change=(Button)findViewById(R.id.change);
+        change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openupdate();
             }
         });
 
 
     }
 
+    private void openupdate() {
+        Intent intent = new Intent(this, update.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+    }
+
     private void gotoPieActivity() {
         startActivity(new Intent(analysis.this,piechart.class));
+        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
 
     public void openhome() {
@@ -183,15 +203,15 @@ public class analysis extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
+//    public void onItemSelected(AdapterView<?> parent, View view,
+//                               int pos, long id) {
+//        // An item was selected. You can retrieve the selected item using
+//        // parent.getItemAtPosition(pos)
+//    }
+//
+//    public void onNothingSelected(AdapterView<?> parent) {
+//        // Another interface callback
+//    }
 
     private void showMyrec() {
         Date date1 = getDateFromString(et_date1.getText().toString());
@@ -252,7 +272,7 @@ public class analysis extends AppCompatActivity {
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                 String cat = documentSnapshot.getString("category");
                                 String amt = documentSnapshot.get("amt").toString();
-//                            String date = documentSnapshot.getDate("date").toString();
+//                            String date = documentSnapshot.getDate("date").toS tring();
 
                                 String pattern = "dd-MM-yyyy";
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);

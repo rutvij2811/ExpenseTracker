@@ -44,7 +44,16 @@ public class NewPassword extends AppCompatActivity {
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateUserPassword();
+                if(et_newPass.getText().toString().isEmpty() || et_confNewPass.getText().toString().isEmpty()){
+                    Toast.makeText(NewPassword.this, "Fields cannot be empty.", Toast.LENGTH_SHORT).show();
+                }
+                else  if( et_newPass.getText().toString().length() < 6){
+                    Toast.makeText(NewPassword.this, "Min password length is 6 characters.", Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    updateUserPassword();
+                }
             }
         });
     }
