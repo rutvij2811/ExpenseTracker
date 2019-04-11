@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class settings2 extends AppCompatActivity {
@@ -30,6 +32,7 @@ public class settings2 extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Button bt_addCat;
     private EditText et_catName;
+    private TextToSpeech mTTS;
     String userToUse;
     private DocumentReference loginRef,catRef;
     private static final String TAG = "settings2";
@@ -41,6 +44,13 @@ public class settings2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings2);
+
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
 
         et_catName = findViewById(R.id.set2_cat);
         bt_addCat = findViewById(R.id.set2_add);
@@ -113,7 +123,11 @@ public class settings2 extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(settings2.this, "Cat Added", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(settings2.this, "Cat Added", Toast.LENGTH_SHORT).show();
+                        String text = "Category added.";
+                        mTTS.setPitch(1);
+                        mTTS.setSpeechRate(1);
+                        mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         et_catName.setText(null);
                     }
                 })
@@ -151,5 +165,15 @@ public class settings2 extends AppCompatActivity {
         Intent intent = new Intent(this, settings.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
 }
