@@ -3,6 +3,7 @@ package com.example.myapp;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class home extends AppCompatActivity {
     private static final String TAG = "home";
     private String userToUse;
     DatePickerDialog.OnDateSetListener mDateSetListner1;
-    private Button logout, settings, profile, manlog, analysis, addRec;
+    private Button logout, settings, profile, manlog, analysis, addRec,msg;
     private EditText et_cat, et_amt;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference recordRef;
@@ -57,6 +58,7 @@ public class home extends AppCompatActivity {
     private TextView et_date;
     private ArrayList<String> categoryList = new ArrayList<>();
     private CollectionReference catListRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,11 +139,25 @@ public class home extends AppCompatActivity {
                 loginmanage();
             }
         });
+        msg = findViewById(R.id.msg);
+        msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addmsg();
+            }
+        });
         analysis = findViewById(R.id.analysis);
         analysis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openanalysis();
+            }
+        });
+        msg=findViewById(R.id.msg);
+        msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openmsg();
             }
         });
     }
@@ -207,7 +223,7 @@ public class home extends AppCompatActivity {
                             SharedPreferences.Editor editor = userNamePref.edit();
                             editor.putString("userName",userToUse);
                             editor.apply();
-//                            Toast.makeText(home.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(home.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
                             catNameList();
                         }
                     }
@@ -231,7 +247,11 @@ public class home extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-
+    public void openmsg() {
+        Intent intent = new Intent(this, message.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
     public void profilemanage() {
         Intent intent = new Intent(this, profile.class);
         startActivity(intent);
@@ -243,7 +263,11 @@ public class home extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-
+    public void addmsg() {
+        Intent intent = new Intent(this, message.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
     public void openanalysis() {
         Intent intent = new Intent(this, analysis.class);
         startActivity(intent);
@@ -260,4 +284,9 @@ public class home extends AppCompatActivity {
         }
 
     }
+
+
+
+
+
 }

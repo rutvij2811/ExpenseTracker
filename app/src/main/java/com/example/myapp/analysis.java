@@ -78,7 +78,7 @@ public class analysis extends AppCompatActivity {
         recordRef = db.collection(userToUse + " Record");
 
 
-        Toast.makeText(this, "User :" + userToUse, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "User :" + userToUse, Toast.LENGTH_SHORT).show();
         et_date1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

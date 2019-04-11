@@ -3,6 +3,7 @@ package com.example.myapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText username,password;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef,loginRef;
+    boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -120,5 +122,23 @@ public class MainActivity extends AppCompatActivity {
     public void opensignup() {
         Intent intent = new Intent(this, signup.class);
         startActivity(intent);
+    }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finish();
+            System.exit(0);
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }
