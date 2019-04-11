@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import io.opencensus.tags.Tag;
@@ -30,6 +32,7 @@ import io.opencensus.tags.Tag;
 public class MainActivity extends AppCompatActivity {
 
     private Button login, signup;
+    private TextToSpeech mTTS;
     private TextView forgotPass;
     private EditText username,password;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -41,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
 
         username = (EditText)findViewById(R.id.main_username);
         password = (EditText)findViewById(R.id.main_pass);
@@ -88,7 +97,11 @@ public class MainActivity extends AppCompatActivity {
                             String etuser = username.getText().toString();
                             String etpass = password.getText().toString();
                             if(etuser.equals(usernamedb) && etpass.equals(passworddb)){
-                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                String text = "Success";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                                 loginRef = db.collection("login").document("username");
                                 Map<String, Object> logUser = new HashMap<>();
                                 logUser.put("Username",etuser);
@@ -100,7 +113,11 @@ public class MainActivity extends AppCompatActivity {
                                 gotoHome();
                             }
                         }else{
-                            Toast.makeText(MainActivity.this, "Please enter valid username or password", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Please enter valid username or password", Toast.LENGTH_SHORT).show();
+                            String text = "Please enter valid username or password.";
+                            mTTS.setPitch(1);
+                            mTTS.setSpeechRate(1);
+                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }
                 })
@@ -140,5 +157,14 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
 }
