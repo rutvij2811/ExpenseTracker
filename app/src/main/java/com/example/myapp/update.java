@@ -174,7 +174,7 @@ public class update extends AppCompatActivity {
                                     docRef.set(updateRecord, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(update.this, "transfered the record successfully", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(update.this, "Transferred the record successfully", Toast.LENGTH_SHORT).show();
                                             tran_date.setText(null);
                                             from_cat.setText(null);
                                             to_cat.setText(null);
@@ -183,7 +183,7 @@ public class update extends AppCompatActivity {
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(update.this, "record couldn't be transfered ", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(update.this, "Record couldn't be transferred ", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                 }
@@ -222,7 +222,7 @@ public class update extends AppCompatActivity {
                                     docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(update.this, "deleted the record", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(update.this, "Deleted the record", Toast.LENGTH_SHORT).show();
                                             del_cat.setText(null);
                                             del_date.setText(null);
                                         }
@@ -230,7 +230,7 @@ public class update extends AppCompatActivity {
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(update.this, "record couldn't be deleted ", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(update.this, "Record couldn't be deleted ", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                 }

@@ -78,7 +78,7 @@ public class profile extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             String userToUse = documentSnapshot.getString("Username");
-                            Toast.makeText(profile.this, userToUse, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(profile.this, userToUse, Toast.LENGTH_SHORT).show();
                             tv_username.setText(userToUse);
                             getUserData();
                         }

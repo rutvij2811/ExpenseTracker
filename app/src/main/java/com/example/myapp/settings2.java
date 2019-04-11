@@ -90,7 +90,7 @@ public class settings2 extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             userToUse = documentSnapshot.getString("Username");
-                            Toast.makeText(settings2.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(settings2.this, "User :"+userToUse, Toast.LENGTH_SHORT).show();
                             createCatRef();
                         }
                     }
