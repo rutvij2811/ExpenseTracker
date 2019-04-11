@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class profile extends AppCompatActivity {
@@ -31,6 +33,7 @@ public class profile extends AppCompatActivity {
     private DocumentReference loginRef,userRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView tv_username,et_dob;
+    private TextToSpeech mTTS;
     private static final String KEY_PHONE ="phone";
     private static final String KEY_ADDR = "address";
     private static final String KEY_DOB = "dob";
@@ -41,6 +44,13 @@ public class profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
 
         et_dob =  findViewById(R.id.pro_dob);
         et_dob.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +149,11 @@ public class profile extends AppCompatActivity {
         userUpdate.put(KEY_PHONE,et_phone.getText().toString());
         userUpdate.put(KEY_ADDR,et_addr.getText().toString());
         if(et_phone.getText().toString().length() != 10){
-            Toast.makeText(this, "The phone number should have 10 digits.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "The phone number should have 10 digits.", Toast.LENGTH_SHORT).show();
+            String text = "The phone number should have 10 digits.";
+            mTTS.setPitch(1);
+            mTTS.setSpeechRate(1);
+            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
         else{
 
@@ -147,7 +161,11 @@ public class profile extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(profile.this, "Updated", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(profile.this, "Updated", Toast.LENGTH_SHORT).show();
+                            String text = "Updated.";
+                            mTTS.setPitch(1);
+                            mTTS.setSpeechRate(1);
+                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -165,6 +183,16 @@ public class profile extends AppCompatActivity {
         Intent intent = new Intent(this, home.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
 }
 
