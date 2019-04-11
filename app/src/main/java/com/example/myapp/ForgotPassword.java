@@ -110,4 +110,14 @@ public class ForgotPassword extends AppCompatActivity {
         startActivity(new Intent(ForgotPassword.this, NewPassword.class));
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
+    }
+
 }

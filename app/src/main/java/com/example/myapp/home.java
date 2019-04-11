@@ -306,7 +306,15 @@ public class home extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
 
+        super.onDestroy();
+    }
 
 
 
