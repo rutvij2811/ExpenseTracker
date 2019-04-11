@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class update extends AppCompatActivity {
@@ -38,6 +40,7 @@ public class update extends AppCompatActivity {
     TextView tran_date, del_date;
     TextView from_cat, to_cat,del_cat;
     String cat_from;
+    private TextToSpeech mTTS;
     private static final String KEY_CATEGORY = "category";
     private static final String KEY_DATE = "date";
     DatePickerDialog.OnDateSetListener mDateSetListner1, mDateSetListner2;
@@ -52,6 +55,13 @@ public class update extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
+
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
 
         tran_date = (TextView) findViewById(R.id.tran_date);
         del_date = (TextView) findViewById(R.id.del_date);
@@ -174,7 +184,11 @@ public class update extends AppCompatActivity {
                                     docRef.set(updateRecord, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(update.this, "Transferred the record successfully", Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(update.this, "Transferred the record successfully", Toast.LENGTH_SHORT).show();
+                                            String text = "Transferred the record successfully.";
+                                            mTTS.setPitch(1);
+                                            mTTS.setSpeechRate(1);
+                                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                                             tran_date.setText(null);
                                             from_cat.setText(null);
                                             to_cat.setText(null);
@@ -183,7 +197,11 @@ public class update extends AppCompatActivity {
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(update.this, "Record couldn't be transferred ", Toast.LENGTH_SHORT).show();
+//                                                    Toast.makeText(update.this, "Record couldn't be transferred ", Toast.LENGTH_SHORT).show();
+                                                    String text = "Record couldn\'t be transferred.";
+                                                    mTTS.setPitch(1);
+                                                    mTTS.setSpeechRate(1);
+                                                    mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                                                 }
                                             });
                                 }
@@ -222,7 +240,11 @@ public class update extends AppCompatActivity {
                                     docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(update.this, "Deleted the record", Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(update.this, "Deleted the record", Toast.LENGTH_SHORT).show();
+                                            String text = "Deleted the record.";
+                                            mTTS.setPitch(1);
+                                            mTTS.setSpeechRate(1);
+                                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                                             del_cat.setText(null);
                                             del_date.setText(null);
                                         }
@@ -230,7 +252,11 @@ public class update extends AppCompatActivity {
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(update.this, "Record couldn't be deleted ", Toast.LENGTH_SHORT).show();
+//                                                    Toast.makeText(update.this, "Record couldn't be deleted ", Toast.LENGTH_SHORT).show();
+                                                    String text = "Record couldn\'t be deleted ";
+                                                    mTTS.setPitch(1);
+                                                    mTTS.setSpeechRate(1);
+                                                    mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                                                 }
                                             });
                                 }
@@ -271,5 +297,15 @@ public class update extends AppCompatActivity {
             return null;
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
 }
