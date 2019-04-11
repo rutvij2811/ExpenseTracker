@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +20,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class manlog extends AppCompatActivity {
     private Button manlog_back, btn_savechanges;
+    private TextToSpeech mTTS;
     private TextView tv_user_ML;
     private EditText et_oldPassML, et_newPassML;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -34,6 +37,12 @@ public class manlog extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manlog);
 
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
         tv_user_ML = findViewById(R.id.tv_user_ML);
         SharedPreferences userNamePref = getSharedPreferences("username", MODE_PRIVATE);
         String userName = userNamePref.getString("userName", "");
@@ -46,9 +55,17 @@ public class manlog extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (et_oldPassML.getText().toString().isEmpty() || et_newPassML.getText().toString().isEmpty()) {
-                    Toast.makeText(manlog.this, "Make sure none of the fields are empty.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(manlog.this, "Make sure none of the fields are empty.", Toast.LENGTH_SHORT).show();
+                    String text = "Make sure none of the fields are empty.";
+                    mTTS.setPitch(1);
+                    mTTS.setSpeechRate(1);
+                    mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                 } else if (et_oldPassML.getText().toString().length() < 6 || et_newPassML.getText().toString().length() < 6) {
-                    Toast.makeText(manlog.this, "Min password length is 6 characters", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(manlog.this, "Min password length is 6 characters.", Toast.LENGTH_SHORT).show();
+                    String text = "Minimum password length is 6 characters.";
+                    mTTS.setPitch(1);
+                    mTTS.setSpeechRate(1);
+                    mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                 } else {
                     checkOldPass();
                 }
@@ -76,7 +93,11 @@ public class manlog extends AppCompatActivity {
                             allowUpdateOnPass();
                         }
                         else {
-                            Toast.makeText(manlog.this, "Old password is wrong !", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(manlog.this, "Old password is wrong.", Toast.LENGTH_SHORT).show();
+                            String text = "Old password is wrong.";
+                            mTTS.setPitch(1);
+                            mTTS.setSpeechRate(1);
+                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }
                 })
@@ -100,7 +121,11 @@ public class manlog extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(manlog.this, "Success", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(manlog.this, "Success", Toast.LENGTH_SHORT).show();
+                        String text = "Success";
+                        mTTS.setPitch(1);
+                        mTTS.setSpeechRate(1);
+                        mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         openhome();
                     }
                 })
