@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -43,6 +45,7 @@ public class analysis extends AppCompatActivity {
     TextView showrecord;
     TextView et_date1, et_date2;
     EditText ana_cat;
+    private TextToSpeech mTTS;
     DatePickerDialog.OnDateSetListener mDateSetListner1, mDateSetListner2;
     private Button ana_back, analyze,piebtn,change;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -54,6 +57,14 @@ public class analysis extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analysis);
+
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
+
         ana_back = (Button) findViewById(R.id.ana_back);
         ana_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +172,11 @@ public class analysis extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(et_date1.getText().toString().isEmpty() || et_date2.getText().toString().isEmpty()){
-                    Toast.makeText(analysis.this, "Please set a date range", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(analysis.this, "Please set a date range", Toast.LENGTH_SHORT).show();
+                    String text = "Please set a Date range.";
+                    mTTS.setPitch(1);
+                    mTTS.setSpeechRate(1);
+                    mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                 }
                 else{
 
@@ -230,7 +245,11 @@ public class analysis extends AppCompatActivity {
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             sample = "";
                             if (queryDocumentSnapshots.isEmpty()) {
-                                Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
+                                String text = "No record in the date range.";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                             }
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                 String cat = documentSnapshot.getString("category");
@@ -267,7 +286,11 @@ public class analysis extends AppCompatActivity {
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             sample = "";
                             if (queryDocumentSnapshots.isEmpty()) {
-                                Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(analysis.this, "No record in the date range", Toast.LENGTH_SHORT).show();
+                                String text = "No record in the date range.";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                             }
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                 String cat = documentSnapshot.getString("category");
