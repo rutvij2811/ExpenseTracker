@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -36,6 +38,7 @@ public class settings4 extends AppCompatActivity {
     EditText et_cat, et_amt;
     Button btn_update;
     private Button back, addlt4, showcat4, addcat4;
+    private TextToSpeech mTTS;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference loginRef, updateCatRef;
     private CollectionReference getCatRef;
@@ -46,6 +49,13 @@ public class settings4 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        getLoginDetails();
         setContentView(R.layout.activity_settings4);
+
+        mTTS =new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTTS.setLanguage(Locale.ENGLISH);
+            }
+        });
 
         et_cat = findViewById(R.id.set4_cat);
         et_amt = findViewById(R.id.set4_amt);
@@ -147,7 +157,7 @@ public class settings4 extends AppCompatActivity {
     }
 
     private void updateCategory() {
-        Toast.makeText(this, "Update  ", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Update  ", Toast.LENGTH_SHORT).show();
         updateCatRef = db.collection(userToUse + " Categories").document(et_cat.getText().toString());
 
         Map<String, Object> updateCat = new HashMap<>();
@@ -155,15 +165,27 @@ public class settings4 extends AppCompatActivity {
         updateCat.put(KEY_AMT, Integer.parseInt(et_amt.getText().toString()));
 
         if (et_cat.getText().toString().isEmpty() || et_amt.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Make sure no field is empty", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Make sure no field is empty", Toast.LENGTH_SHORT).show();
+            String text = "Make sure no field is empty.";
+            mTTS.setPitch(1);
+            mTTS.setSpeechRate(1);
+            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         } else if (!categoryList.contains(et_cat.getText().toString())) {
-            Toast.makeText(this, "Category not yet defined", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Category not yet defined", Toast.LENGTH_SHORT).show();
+            String text = "Category not yet defined.";
+            mTTS.setPitch(1);
+            mTTS.setSpeechRate(1);
+            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         } else {
             updateCatRef.set(updateCat, SetOptions.merge())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(settings4.this, "Amount added to " + et_cat.getText().toString(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(settings4.this, "Amount added to " + et_cat.getText().toString(), Toast.LENGTH_SHORT).show();
+                            String text = "Amount added to " + et_cat.getText().toString();
+                            mTTS.setPitch(1);
+                            mTTS.setSpeechRate(1);
+                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
 //                            getCategoryList();
                             et_cat.setText(null);
                             et_amt.setText(null);
@@ -207,5 +229,15 @@ public class settings4 extends AppCompatActivity {
         Intent intent = new Intent(this, settings.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
 }
