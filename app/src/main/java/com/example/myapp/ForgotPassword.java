@@ -92,7 +92,11 @@ public class ForgotPassword extends AppCompatActivity {
 
                             gotoNewPass();
                         }else{
-                            Toast.makeText(ForgotPassword.this, "Wrong Secret or username", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ForgotPassword.this, "Wrong Secret or username", Toast.LENGTH_SHORT).show();
+                            String text = "Wrong Secret or username.";
+                            mTTS.setPitch(1);
+                            mTTS.setSpeechRate(1);
+                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
 
                     }
