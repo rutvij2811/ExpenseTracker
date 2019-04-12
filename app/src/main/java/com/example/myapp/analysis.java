@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,6 +44,7 @@ public class analysis extends AppCompatActivity {
     static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     String userToUse;
     TextView showrecord;
+    TextView tv;
     TextView et_date1, et_date2;
     EditText ana_cat;
     private TextToSpeech mTTS;
@@ -168,6 +170,8 @@ public class analysis extends AppCompatActivity {
 
         analyze = (Button) findViewById(R.id.analyze);
         showrecord = findViewById(R.id.tv_ana);
+        tv = (TextView) findViewById(R.id.tv_ana);
+        tv.setMovementMethod(new ScrollingMovementMethod());
         analyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,9 +265,19 @@ public class analysis extends AppCompatActivity {
                                 String date = simpleDateFormat.format(documentSnapshot.getDate("date"));
 
                                 sample += amt + " for " + cat + " on " + date + "\n";
+                                if(cat.equals("shopping")){
+                                    sample+="\b\t\t"+"common shop names for shopping: \n"+"\t\t\t\t"+"Amazon\n\t\t\t\tFlipkart\n\t\t\t\tMyntra\n\n";
+                                }
+
+                                if(cat.equals("food")){
+                                    sample+="\b\t\t"+"common shop names for food: \n"+"\t\t\t\t"+"Uber Eats\n\t\t\t\tSwiggy\n\t\t\t\tZomato\n\t\t\t\tFood panda\n\n";
+                                }
+                                if(cat.equals("movies")){
+                                    sample+="\b\t\t"+"common shop names: \n"+"\t\t\t\t"+"IMAX\n\t\t\t\tPVR\n\t\t\t\tINOX\n\n";
+                                }
 
                             }
-                            showrecord.setText(sample);
+                            tv.setText(sample);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -302,9 +316,18 @@ public class analysis extends AppCompatActivity {
                                 String date = simpleDateFormat.format(documentSnapshot.getDate("date"));
 
                                 sample += amt + " for " + cat + " on " + date + "\n";
+                                if(cat.equals("shopping")){
+                                    sample+="\t\t"+"common shop names: \n"+"\t\t\t\t"+"Amazon\n\t\t\t\tFlipkart\n\t\t\t\tMyntra\n";
+                                }
 
+                                if(cat.equals("food")){
+                                    sample+="\t\t"+"common shop names: \n"+"\t\t\t\t"+"Uber Eats\n\t\t\t\tSwiggy\n\t\t\t\tZomato\n\t\t\t\tFood panda\n";
+                                }
+                                if(cat.equals("movies")){
+                                    sample+="\t\t"+"common shop names: \n"+"\t\t\t\t"+"IMAX\n\t\t\t\tPVR\n\t\t\t\tINOX\n";
+                                }
                             }
-                            showrecord.setText(sample);
+                            tv.setText(sample);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

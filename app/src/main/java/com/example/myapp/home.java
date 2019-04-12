@@ -50,6 +50,7 @@ public class home extends AppCompatActivity {
     private static final String KEY_AMT = "amt";
     private static final String KEY_DATE = "date";
     private static final String TAG = "home";
+    boolean doubleBackToExitPressedOnce = false;
     private String userToUse;
     private TextToSpeech mTTS;
     DatePickerDialog.OnDateSetListener mDateSetListner1;
@@ -305,7 +306,26 @@ public class home extends AppCompatActivity {
         }
 
     }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
 
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
     @Override
     protected void onDestroy() {
         if (mTTS != null) {

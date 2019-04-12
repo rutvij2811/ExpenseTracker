@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText username,password;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef,loginRef;
-    boolean doubleBackToExitPressedOnce = false;
+
     private static final String TAG = "MainActivity";
 
     @Override
@@ -142,21 +142,10 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            finish();
-            System.exit(0);
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 2000);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
     @Override
     protected void onDestroy() {

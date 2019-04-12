@@ -82,11 +82,25 @@ public class message extends AppCompatActivity {
         String  paytm = "PAYTM";
         String rs = "Rs ";
         String tran = " transferred";
-        String at = "at ";
         String end = ".";
         //for tez
         String tez ="Google Pay";
         String pe="PhonePe";
+
+        String ama="Amazon";
+        String flip="Flipkart";
+        String myn="Myntra";
+        String snap="SnapDeal";
+        String has=" has";
+
+        String zo="Zomato";
+        String ub="UberEats";
+        String sw="Swiggy";
+        String fo="FoodPanda";
+
+        String in="INOX";
+        String im="IMAX";
+        String pv="PVR";
 
         if(msgfield.getText().toString().isEmpty()){
 //            Toast.makeText(message.this, "Please enter a text message.", Toast.LENGTH_SHORT).show();
@@ -98,7 +112,7 @@ public class message extends AppCompatActivity {
         else{
 // Verify that our expected pieces of text are present.
         if ((!(message.contains(on) && message.contains(pos))) && (!(message.contains(on) && message.contains(atm)))
-                && (!(message.contains(at) && message.contains(end))) && (!(message.contains(rs) && message.contains(tran)))) {
+                && (!(message.contains(on) && message.contains(end))) && (!(message.contains(rs) && message.contains(tran)))) {
 //            Toast.makeText(message.this, "Enter a valid message.", Toast.LENGTH_SHORT).show();
             String text = "Enter a valid message.";
             mTTS.setPitch(1);
@@ -198,60 +212,14 @@ public class message extends AppCompatActivity {
                     });
 
         }
-        if (message.contains(rs) && message.contains(tran) && message.contains(at) && message.contains(end) && message.contains(paytm)) {
-            int indexRs = message.indexOf(rs);
-            int indexTran = message.indexOf(tran);
-            int indexAt = message.indexOf(at);
-            int indexEnd = message.indexOf(end);
 
-            String extracted_date = message.substring(indexAt + at.length(), indexEnd);
-            Date date = getDateFromString(extracted_date);
-            String extracted_amt = message.substring(indexRs + rs.length(), indexTran);
-            int amount = Integer.parseInt(extracted_amt);
-
-//            Toast.makeText(message.this, "Shop name: PAYTM", Toast.LENGTH_SHORT).show();
-            String text = "Shop name: Pay TM";
-            mTTS.setPitch(1);
-            mTTS.setSpeechRate(1);
-            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-            msgfield.setText(null);
-
-            recordRef = db.collection(userToUse + " Record").document();
-            Map<String, Object> insertRecord = new HashMap<>();
-            insertRecord.put(KEY_CATEGORY, "PAYTM");
-            insertRecord.put(KEY_AMT, amount);
-            insertRecord.put(KEY_DATE, date);
-
-            recordRef
-                    .set(insertRecord)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-//                            Toast.makeText(message.this, "Record added", Toast.LENGTH_SHORT).show();
-                            String text = "Record added.";
-                            mTTS.setPitch(1);
-                            mTTS.setSpeechRate(1);
-                            mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-                            msgfield.setText(null);
-                            msgfield.setText(null);
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, e.toString());
-                        }
-                    });
-
-        }
-            if (message.contains(rs) && message.contains(tran) && message.contains(at) && message.contains(end) && message.contains(tez)) {
+            if (message.contains(rs) && message.contains(tran) && message.contains(on) && message.contains(end) && message.contains(tez)) {
                 int indexRs = message.indexOf(rs);
                 int indexTran = message.indexOf(tran);
-                int indexAt = message.indexOf(at);
+                int indexAt = message.indexOf(on);
                 int indexEnd = message.indexOf(end);
 
-                String extracted_date = message.substring(indexAt + at.length(), indexEnd);
+                String extracted_date = message.substring(indexAt + on.length(), indexEnd);
                 Date date = getDateFromString(extracted_date);
                 String extracted_amt = message.substring(indexRs + rs.length(), indexTran);
                 int amount = Integer.parseInt(extracted_amt);
@@ -290,13 +258,13 @@ public class message extends AppCompatActivity {
                         });
 
             }
-            if (message.contains(rs) && message.contains(tran) && message.contains(at) && message.contains(end) && message.contains(pe)) {
+            if (message.contains(rs) && message.contains(tran) && message.contains(on) && message.contains(end) && message.contains(pe)) {
                 int indexRs = message.indexOf(rs);
                 int indexTran = message.indexOf(tran);
-                int indexAt = message.indexOf(at);
+                int indexAt = message.indexOf(on);
                 int indexEnd = message.indexOf(end);
 
-                String extracted_date = message.substring(indexAt + at.length(), indexEnd);
+                String extracted_date = message.substring(indexAt + on.length(), indexEnd);
                 Date date = getDateFromString(extracted_date);
                 String extracted_amt = message.substring(indexRs + rs.length(), indexTran);
                 int amount = Integer.parseInt(extracted_amt);
@@ -334,6 +302,265 @@ public class message extends AppCompatActivity {
                             }
                         });
 
+            }
+            if (message.contains(rs) && message.contains(tran) && message.contains(on) && message.contains(end) && message.contains(pe)) {
+                int indexRs = message.indexOf(rs);
+                int indexTran = message.indexOf(tran);
+                int indexAt = message.indexOf(on);
+                int indexEnd = message.indexOf(end);
+
+                String extracted_date = message.substring(indexAt + on.length(), indexEnd);
+                Date date = getDateFromString(extracted_date);
+                String extracted_amt = message.substring(indexRs + rs.length(), indexTran);
+                int amount = Integer.parseInt(extracted_amt);
+
+//                Toast.makeText(message.this, "Shop name: PhonePe", Toast.LENGTH_SHORT).show();
+                String text = "Shop name: PhonePe";
+                mTTS.setPitch(1);
+                mTTS.setSpeechRate(1);
+                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+
+                recordRef = db.collection(userToUse + " Record").document();
+                Map<String, Object> insertRecord = new HashMap<>();
+                insertRecord.put(KEY_CATEGORY, "PhonePe");
+                insertRecord.put(KEY_AMT, amount);
+                insertRecord.put(KEY_DATE, date);
+
+                recordRef
+                        .set(insertRecord)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                                Toast.makeText(message.this, "Record added", Toast.LENGTH_SHORT).show();
+                                String text = "Record added.";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                                msgfield.setText(null);
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+
+            }
+            if (message.contains(rs) && message.contains(has) && message.contains(on) && message.contains(end) && (message.contains(flip)
+                    || message.contains(ama)|| message.contains(myn)|| message.contains(snap))) {
+                int indexRs = message.indexOf(rs);
+                int indexhas = message.indexOf(has);
+                int indexAt = message.indexOf(on);
+                int indexEnd = message.indexOf(end);
+
+                String extracted_date = message.substring(indexAt + on.length(), indexEnd);
+                Date date = getDateFromString(extracted_date);
+                String extracted_amt = message.substring(indexRs + rs.length(), indexhas);
+                int amount = Integer.parseInt(extracted_amt);
+
+//            Toast.makeText(message.this, "Shop name: PAYTM", Toast.LENGTH_SHORT).show();
+                String text="Other";
+                if(message.contains("Amazon")){ text = "Shop name: Amazon";Toast.makeText(message.this, "Shop name: amazon", Toast.LENGTH_SHORT).show();}
+                if(message.contains("Flipkart")){ text = "Shop name: Flipkart";Toast.makeText(message.this, "Shop name: flipkart", Toast.LENGTH_SHORT).show();}
+                if(message.contains("SnapDeal")){ text = "Shop name: Snap deal";Toast.makeText(message.this, "Shop name: snapdeal", Toast.LENGTH_SHORT).show();}
+                if(message.contains("Myntra")){ text = "Shop name: Myntra";Toast.makeText(message.this, "Shop name: myntra", Toast.LENGTH_SHORT).show();}
+                mTTS.setPitch(1);
+                mTTS.setSpeechRate(1);
+                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                msgfield.setText(null);
+
+                recordRef = db.collection(userToUse + " Record").document();
+                Map<String, Object> insertRecord = new HashMap<>();
+                insertRecord.put(KEY_CATEGORY, "shopping");
+                insertRecord.put(KEY_AMT, amount);
+                insertRecord.put(KEY_DATE, date);
+
+                recordRef
+                        .set(insertRecord)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                            Toast.makeText(message.this, "Record added", Toast.LENGTH_SHORT).show();
+                                String text = "Record added to shopping.";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                                msgfield.setText(null);
+                                msgfield.setText(null);
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+
+            }
+            if (message.contains(rs) && message.contains(has) && message.contains(on) && message.contains(end) && (message.contains(ub)
+                    || message.contains(zo)|| message.contains(sw)|| message.contains(fo))) {
+                int indexRs = message.indexOf(rs);
+                int indexhas = message.indexOf(has);
+                int indexAt = message.indexOf(on);
+                int indexEnd = message.indexOf(end);
+
+                String extracted_date = message.substring(indexAt + on.length(), indexEnd);
+                Date date = getDateFromString(extracted_date);
+                String extracted_amt = message.substring(indexRs + rs.length(), indexhas);
+                int amount = Integer.parseInt(extracted_amt);
+
+//            Toast.makeText(message.this, "Shop name: PAYTM", Toast.LENGTH_SHORT).show();
+                String text="Other";
+                if(message.contains(ub)){
+                    text = "Shop name: uber eats";
+                    Toast.makeText(message.this, "Shop name: uber eats", Toast.LENGTH_SHORT).show();
+                }
+                if(message.contains(zo)){
+                    text = "Shop name: zomato";
+                    Toast.makeText(message.this, "Shop name: zomato", Toast.LENGTH_SHORT).show();
+                }
+                if(message.contains(sw)){
+                    text = "Shop name: swiggy";
+                    Toast.makeText(message.this, "Shop name: swiggy", Toast.LENGTH_SHORT).show();
+                }
+                if(message.contains(fo)){
+                    text = "Shop name: food panda";
+                    Toast.makeText(message.this, "Shop name: food panda", Toast.LENGTH_SHORT).show();
+                }
+
+                recordRef = db.collection(userToUse + " Record").document();
+                Map<String, Object> insertRecord = new HashMap<>();
+                insertRecord.put(KEY_CATEGORY, "food");
+                insertRecord.put(KEY_AMT, amount);
+                insertRecord.put(KEY_DATE, date);
+
+                recordRef
+                        .set(insertRecord)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                            Toast.makeText(message.this, "Record added", Toast.LENGTH_SHORT).show();
+                                String text = "Record added to food.";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                                msgfield.setText(null);
+                                msgfield.setText(null);
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+
+            }
+            if (message.contains(rs) && message.contains(has) && message.contains(on) && message.contains(end) && (message.contains(in)
+                    || message.contains(im)|| message.contains(pv))) {
+                int indexRs = message.indexOf(rs);
+                int indexhas = message.indexOf(has);
+                int indexAt = message.indexOf(on);
+                int indexEnd = message.indexOf(end);
+
+                String extracted_date = message.substring(indexAt + on.length(), indexEnd);
+                Date date = getDateFromString(extracted_date);
+                String extracted_amt = message.substring(indexRs + rs.length(), indexhas);
+                int amount = Integer.parseInt(extracted_amt);
+
+//            Toast.makeText(message.this, "Shop name: PAYTM", Toast.LENGTH_SHORT).show();
+                String text;
+                if(message.contains(in)){
+                    text = "Shop name: INOX";
+                    Toast.makeText(message.this, "Shop name: INOX", Toast.LENGTH_SHORT).show();
+                }
+                if(message.contains(im)){
+                    text = "Shop name: IMAX";
+                    Toast.makeText(message.this, "Shop name: IMAX", Toast.LENGTH_SHORT).show();
+                }
+                if(message.contains(pv)){
+                    text = "Shop name: PVR";
+                    Toast.makeText(message.this, "Shop name: P V R", Toast.LENGTH_SHORT).show();
+                }
+                recordRef = db.collection(userToUse + " Record").document();
+                Map<String, Object> insertRecord = new HashMap<>();
+                insertRecord.put(KEY_CATEGORY, "movies");
+                insertRecord.put(KEY_AMT, amount);
+                insertRecord.put(KEY_DATE, date);
+
+                recordRef
+                        .set(insertRecord)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                            Toast.makeText(message.this, "Record added", Toast.LENGTH_SHORT).show();
+                                String text = "Record added to movies.";
+                                mTTS.setPitch(1);
+                                mTTS.setSpeechRate(1);
+                                mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                                msgfield.setText(null);
+                                msgfield.setText(null);
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+
+            }
+            else {
+
+                if (message.contains(rs) && message.contains(has) && message.contains(on) && message.contains(end)) {
+                    int indexRs = message.indexOf(rs);
+                    int indexhas = message.indexOf(has);
+                    int indexAt = message.indexOf(on);
+                    int indexEnd = message.indexOf(end);
+
+                    String extracted_date = message.substring(indexAt + on.length(), indexEnd);
+                    Date date = getDateFromString(extracted_date);
+                    String extracted_amt = message.substring(indexRs + rs.length(), indexhas);
+                    int amount = Integer.parseInt(extracted_amt);
+
+//            Toast.makeText(message.this, "Shop name: PAYTM", Toast.LENGTH_SHORT).show();
+
+                    recordRef = db.collection(userToUse + " Record").document();
+                    Map<String, Object> insertRecord = new HashMap<>();
+                    insertRecord.put(KEY_CATEGORY, "other");
+                    insertRecord.put(KEY_AMT, amount);
+                    insertRecord.put(KEY_DATE, date);
+
+                    recordRef
+                            .set(insertRecord)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(message.this, "category has been set to other", Toast.LENGTH_SHORT).show();
+
+                                    String text = "Record added to other category. You can change the category by clicking transfer button in analysis page";
+
+                                    mTTS.setPitch(1);
+                                    mTTS.setSpeechRate(1);
+                                    mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                                    msgfield.setText(null);
+                                    msgfield.setText(null);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, e.toString());
+                                }
+                            });
+
+
+                }
             }
     }
     }
